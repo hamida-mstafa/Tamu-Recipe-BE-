@@ -78,9 +78,9 @@ WSGI_APPLICATION = 'tamu.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'tamu',
-        'USER': 'lenny',
-    'PASSWORD':'28tarantula',
+        'NAME': '',
+        'USER': '',
+    'PASSWORD':'',
     }
 }
 
