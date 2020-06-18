@@ -1,5 +1,6 @@
 {%extends "registration/base.html"%}
 {% load bootstrap4 %}
+{% load socialaccount %}
 {% block content %}
 <div class="container">
   <div class="row">
@@ -27,7 +28,8 @@
             <input type="hidden" name="next" value="{{next}}">
 
           </form>
-          <a href="/accounts/register">Don't have an account? Sign up here.</a>
+          <a href="/accounts/register">Don't have an account? Sign up here.</a><br>
+          <a href="{% provider_login_url 'google' %}">Login with Google</a>
 
         </div>
 

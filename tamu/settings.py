@@ -38,7 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'recipe',
-    'bootstrap4'
+    'bootstrap4',
+    'django.contrib.sites',
+    # 'social_app',
+ 
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
@@ -78,9 +85,9 @@ WSGI_APPLICATION = 'tamu.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': '',
-        'USER': '',
-    'PASSWORD':'',
+        'NAME': 'tamu',
+        'USER': 'lenny',
+    'PASSWORD':'28tarantula',
     }
 }
 
@@ -124,4 +131,25 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"),]
 
-LOGIN_REDIRECT_URL='index'
+AUTHENTICATION_BACKENDS = (
+ 'django.contrib.auth.backends.ModelBackend',
+ 'allauth.account.auth_backends.AuthenticationBackend',
+ )
+
+SITE_ID = 2
+
+LOGIN_REDIRECT_URL='/'
+
+AUTH_USER_MODEL = 'myapp.MyUser'
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
