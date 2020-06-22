@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'recipe',
     'bootstrap4',
+    'django_social_share',
     'django.contrib.sites',
     # 'social_app',
  
@@ -71,6 +72,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.core.context_processors.request',
             ],
         },
     },
@@ -140,7 +142,7 @@ SITE_ID = 2
 
 LOGIN_REDIRECT_URL='/'
 
-AUTH_USER_MODEL = 'myapp.MyUser'
+# AUTH_USER_MODEL = 'recipe.User'
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
