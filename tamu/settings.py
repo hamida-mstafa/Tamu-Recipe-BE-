@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'recipe',
     'bootstrap4',
+    'rest_framework',
     'django_social_share',
     'django.contrib.sites',
     # 'social_app',
