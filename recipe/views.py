@@ -53,3 +53,17 @@ class UserList(APIView):
             serializers.save()
             return Response(serializers.data, status=status.HTTP_201_CREATED)
         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
+class UserDetails(APIView):
+    # permission_classes = (IsAdminOrReadOnly,)
+    def get_user(self, pk):
+        try:
+            return User.objects.get(pk=pk)
+        except User.DoesNotExist:
+            return Http404
+
+    def get(self, request, pk, format=None):
+        user = self.get_user(pk)
+        serializers = UserSerializer(user)
+        return Response(serializers.data)
