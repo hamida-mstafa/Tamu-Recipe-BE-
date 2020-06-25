@@ -1,7 +1,5 @@
 from django.shortcuts import render
 from django.conf import settings
-from django.contrib.auth.backends import BaseBackend
-from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
 from rest_framework.response import Response
 from rest_framework.views  import APIView
@@ -10,34 +8,6 @@ from .serializer import UserSerializer
 from rest_framework import status
 
 # Create your views here.
-def index(request):
-
-    return render(request, 'index.html')
-
-
-class SettingsBackend(BaseBackend):
-
-    def authenticate(self, request, username=None, password=None):
-        login_valid = (settings.ADMIN_LOGIN == username)
-        pwd_valid = check_password(password, settings.ADMIN_PASSWORD)
-        if login_valid and pwd_valid:
-            try:
-                user = User.objects.get(username=username)
-            except User.DoesNotExist:
-                # Create a new user. There's no need to set a password
-                # because only the password from settings.py is checked.
-                user = User(username=username)
-                user.is_staff = True
-                user.is_superuser = True
-                user.save()
-            return user
-        return None
-
-    def get_user(self, user_id):
-        try:
-            return User.objects.get(pk=user_id)
-        except User.DoesNotExist:
-            return None
 
         
 class UserList(APIView):
@@ -57,19 +27,19 @@ class UserList(APIView):
     
 class UserDetails(APIView):
     # permission_classes = (IsAdminOrReadOnly,)
-    def get_user(self, pk):
+    def get_user(self, username):
         try:
-            return User.objects.get(pk=pk)
+            return User.objects.get(username=username)
         except User.DoesNotExist:
             return Http404
 
-    def get(self, request, pk, format=None):
-        user = self.get_user(pk)
+    def get(self, request, username, format=None):
+        user = self.get_user(username)
         serializers = UserSerializer(user)
         return Response(serializers.data)
 
-    def put(self, request, pk, format=None):
-        user = self.get_user(pk)
+    def put(self, request, username, format=None):
+        user = self.get_user(username)
         serializers = UserSerializer(user, request.data)
         if serializers.is_valid():
             serializers.save()
@@ -77,7 +47,7 @@ class UserDetails(APIView):
         else:
             return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk, format=None):
-        user = self.get_user(pk)
+    def delete(self, request, username, format=None):
+        user = self.get_user(username)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
