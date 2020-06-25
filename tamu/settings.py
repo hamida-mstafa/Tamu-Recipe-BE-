@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'bootstrap4',
     'cloudinary',
     'rest_framework',
+    'django_social_share',
+    'django.contrib.sites',
 ]
 
 MIDDLEWARE = [
@@ -86,7 +88,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
@@ -111,14 +112,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Nairobi'
 
 USE_I18N = True
 
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
@@ -135,3 +135,26 @@ cloudinary.config(
   api_key = config('API_KEY'), 
   api_secret = config('API_SECRET')
 )
+
+AUTHENTICATION_BACKENDS = (
+ 'django.contrib.auth.backends.ModelBackend',
+ 'allauth.account.auth_backends.AuthenticationBackend',
+ )
+
+SITE_ID = 2
+
+LOGIN_REDIRECT_URL='/'
+
+# AUTH_USER_MODEL = 'recipe.User'
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}

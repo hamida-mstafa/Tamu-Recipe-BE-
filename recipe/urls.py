@@ -4,6 +4,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path('api/user/', views.UserList.as_view()),
+    path('api/user/user-id/<username>/',views.UserDetails.as_view())
     path('api/profiles/' ,views.ProfileList.as_view()),
     path('api/images/', views.ImageList.as_view()),
     path('api/countries/' ,views.CountryList.as_view()),
