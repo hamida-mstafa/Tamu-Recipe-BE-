@@ -1,5 +1,7 @@
 #Tamu Recipes
 
+## Deployed link
+https://tamu-recipes.herokuapp.com/
 
 # Setting up your system
 
