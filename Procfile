@@ -1,1 +1,1 @@
-web: gunicorn tamu.wsgi
+web: gunicorn tamu.wsgi --log-file -
