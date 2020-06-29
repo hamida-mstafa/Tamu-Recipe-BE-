@@ -1,0 +1,1 @@
+web: gunicorn tamu.wsgi --log-file -
