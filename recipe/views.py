@@ -1,20 +1,25 @@
-from django.http import HttpResponse, Http404
-from .models import Profile, Image, Country, Ingredient, RecipeIngredient
-from django.shortcuts import render, redirect, get_object_or_404
+import json
+
+from django.conf import settings
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
-from .serializer import UserSerializer, ProfileSerializer, ImageSerializer, CountrySerializer, IngredientSerializer, RecipeIngredientSerializer
-from rest_framework.views import APIView
+from django.core import serializers
+from django.http import Http404, HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
-from django.conf import settings
+from rest_framework.views import APIView
+
+from .models import Country, Image, Ingredient, Profile, RecipeIngredient
+from .serializer import (CountrySerializer, ImageSerializer,
+                         IngredientSerializer, ProfileSerializer,
+                         RecipeIngredientSerializer, UserSerializer)
+
 
 # Create your views here.
 class UserList(APIView):
     def get(self, request, format=None):
         all_users = User.objects.all()
-        # import pdb; pdb.set_trace()
         serializers = UserSerializer(all_users, many=True)
         return Response(serializers.data)
 
@@ -26,7 +31,6 @@ class UserList(APIView):
         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserDetails(APIView):
-    # permission_classes = (IsAdminOrReadOnly,)
     def get_user(self, username):
         try:
             return User.objects.get(username=username)
@@ -53,6 +57,7 @@ class UserDetails(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class ProfileList(APIView):
+    # permission_classes = (IsAuthenticated)
     def get(self, request, format=None):
         all_profiles = Profile.objects.all()
         serializer = ProfileSerializer(all_profiles, many=True)
@@ -65,7 +70,8 @@ class ProfileList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_404_BAD_REQUEST) 
 
-class Profiledetails(APIView):  
+class Profiledetails(APIView):
+    # permission_classes = (IsAuthenticated)  
     def getprofile(self, pk):
         try:
             return Profile.objects.get(pk=pk)
@@ -104,17 +110,17 @@ class ImageList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_404_BAD_REQUEST) 
 
-class Imagedetails(APIView):  
+class Imagedetails(APIView): 
     def getimage(self, name):
         try:
             return Image.objects.get(name=name)
         except Image.DoesNotExist:
             return Http404  
 
-    def get(self, request, name, format=None):
-        image = self.getimage(name)
-        serializers = ImageSerializer(image)
-        return Response(serializers.data)
+    def get(self, request, format=None):
+        search_results=Image.objects.filter(name__icontains=self.request.query_params.get('name'))
+        res=serializers.serialize('json',search_results)
+        return Response(json.loads(res),status=status.HTTP_200_OK)
 
     def put(self, request, name, format=None):
         image = self.getimage(name)
@@ -131,6 +137,7 @@ class Imagedetails(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)          
 
 class IngredientList(APIView):
+    # permission_classes = (IsAuthenticated)
     def get(self, request, format=None):
         all_ingredients = Ingredient.objects.all()
         serializer = IngredientSerializer(all_ingredients, many=True)
@@ -143,7 +150,8 @@ class IngredientList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_404_BAD_REQUEST) 
 
-class Ingredientdetails(APIView):  
+class Ingredientdetails(APIView):
+    # permission_classes = (IsAuthenticated)  
     def getingredient(self, name):
         try:
             return Ingredient.objects.get(name=name)
@@ -154,6 +162,11 @@ class Ingredientdetails(APIView):
         ingredient = self.getingredient(name)
         serializers = IngredientSerializer(ingredient)
         return Response(serializers.data)
+
+    # def get(self, request, format=None):
+    #     search_results=Ingredient.objects.filter(name__icontains=self.request.query_params.get('name'))
+    #     res=serializers.serialize('json',search_results)
+    #     return Response(json.loads(res),status=status.HTTP_200_OK)    
 
     def put(self, request, name, format=None):
         ingredient = self.getingredient(name)
@@ -170,6 +183,7 @@ class Ingredientdetails(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)     
 
 class CountryList(APIView):
+    # permission_classes = (IsAuthenticated)
     def get(self, request, format=None):
         all_countries = Country.objects.all()
         serializer = CountrySerializer(all_countries, many=True)
@@ -182,7 +196,8 @@ class CountryList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_404_BAD_REQUEST) 
 
-class Countrydetails(APIView):  
+class Countrydetails(APIView): 
+    # permission_classes = (IsAuthenticated) 
     def getcountry(self, place):
         try:
             return Country.objects.get(place=place)
@@ -193,6 +208,11 @@ class Countrydetails(APIView):
         country = self.getcountry(place)
         serializers = CountrySerializer(country)
         return Response(serializers.data)
+
+    # def get(self, request, format=None):
+    #     search_results=Country.objects.filter(place__icontains=self.request.query_params.get('place'))
+    #     res=serializers.serialize('json',search_results)
+    #     return Response(json.loads(res),status=status.HTTP_200_OK)      
 
     def put(self, request, place, format=None):
         country = self.getcountry(place)
@@ -210,7 +230,6 @@ class Countrydetails(APIView):
 
 class RecipeIngredientList(APIView):
     # permission_classes = (IsAuthenticated)
-
     def get(self, request, format=None):
         all_recipeingredients = RecipeIngredient.objects.all()
         serializer = RecipeIngredientSerializer(all_recipeingredients, many=True)
@@ -225,7 +244,6 @@ class RecipeIngredientList(APIView):
 
 class RecipeIngredientdetails(APIView):  
     # permission_classes = (IsAuthenticated)
-
     def getrecipeingredient(self, name):
         try:
             return RecipeIngredient.objects.get(name=name)
@@ -236,6 +254,11 @@ class RecipeIngredientdetails(APIView):
         recipeingredient = self.getrecipeingredient(name)
         serializers = RecipeIngredientSerializer(recipeingredient)
         return Response(serializers.data)
+
+    # def get(self, request, format=None):
+    #     search_results=RecipeIngredient.objects.filter(name__icontains=self.request.query_params.get('name'))
+    #     res=serializers.serialize('json',search_results)
+    #     return Response(json.loads(res),status=status.HTTP_200_OK)      
 
     def put(self, request, name, format=None):
         recipeingredient = self.getrecipeingredient(name)
@@ -250,5 +273,3 @@ class RecipeIngredientdetails(APIView):
         recipeingredient = self.getrecipeingredient(name)
         recipeingredient.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-        

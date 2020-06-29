@@ -133,3 +133,4 @@ pycache/
 
 .vscode
 
+Makefile
