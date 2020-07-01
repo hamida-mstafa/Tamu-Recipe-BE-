@@ -11,8 +11,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import generics
 
-from .models import Profile, Recipe, RecipeIngredient
-from .serializer import (ProfileSerializer, RecipeSerializer,
+from .models import Profile, Recipe, RecipeIngredient, Country
+from .serializer import (ProfileSerializer, RecipeSerializer, CountrySerializer,
                          RecipeIngredientSerializer, UserSerializer)
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
