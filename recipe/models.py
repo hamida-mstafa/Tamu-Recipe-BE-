@@ -27,7 +27,7 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(RecipeIngredient)
     recipe = models.TextField()
     people_served = models.CharField(max_length=30)
-    country = CountryField()
+    country = models.CharField(max_length=50)
     image = CloudinaryField()
     posted = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
