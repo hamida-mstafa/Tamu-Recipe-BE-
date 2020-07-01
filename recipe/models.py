@@ -15,6 +15,12 @@ class Profile(models.Model):
     def __str__(self):
         return self.bio
 
+class Country(models.Model):
+    place = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.place
+
 class RecipeIngredient(models.Model):
     name = models.CharField(max_length=70)
 

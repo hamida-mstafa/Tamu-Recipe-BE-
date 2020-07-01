@@ -81,16 +81,30 @@ class Ingredientdetails(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RecipeSerializer
     lookup_field='name'
 
+class CountryList(generics.ListCreateAPIView):
+    # permission_classes = (IsAuthenticated)
+    queryset = Country.objects.all()
+    serializer_class = CountrySerializer
+       
+
+class Countrydetails(generics.RetrieveDestroyAPIView): 
+    #  # permission_classes = (IsAuthenticated)
+    queryset = Country.objects.all()
+    lookup_field='place'
+    serializer_class = CountrySerializer
+    
 class RecipeIngredientList(generics.ListCreateAPIView):
     # permission_classes = (IsAuthenticated)
     queryset = RecipeIngredient.objects.all()
     serializer_class = RecipeIngredientSerializer
      
+
 class RecipeIngredientdetails(generics.RetrieveUpdateDestroyAPIView):  
     # permission_classes = (IsAuthenticated)
     queryset = RecipeIngredient.objects.all()
     serializer_class = RecipeIngredientSerializer
     lookup_field = 'name'
+
 
 class Recipes(generics.ListCreateAPIView):
     serializer_class = RecipeSerializer
@@ -113,6 +127,7 @@ class RecipesCountry(generics.ListAPIView):
         country = self.kwargs['country']
         return Recipe.objects.filter(country=country)
 
+
 class RecipesIngredients(generics.ListAPIView):
     serializer_class = RecipeSerializer
     queryset = Recipe.objects.all()
@@ -121,3 +136,5 @@ class RecipesIngredients(generics.ListAPIView):
         ingredients = self.kwargs['ingredients']
         return Recipe.objects.filter(ingredients__icontains=ingredients)
         
+
+

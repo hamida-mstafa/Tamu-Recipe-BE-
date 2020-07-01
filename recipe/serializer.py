@@ -19,6 +19,11 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ('user', 'bio', 'profile_pic','contacts')
 
+class CountrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Country
+        fields = ('place',)
+
 class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
